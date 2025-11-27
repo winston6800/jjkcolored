@@ -559,6 +559,11 @@ body {
     font-weight: 600;
     color: #fff;
     margin-left: 0.5rem;
+    transition: color 0.2s ease;
+}
+
+.manga-title:hover .title {
+    color: #4ecdc4;
 }
 
 /* Chapter Navigation */

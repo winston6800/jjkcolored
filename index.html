@@ -110,13 +110,6 @@
             <!-- Header -->
             <header class="header">
                 <div class="header-left">
-                    <button id="menuBtn" class="menu-btn" title="Menu">
-                        <span class="hamburger">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </span>
-                    </button>
                     <div class="manga-title">
                         <span class="title">Jujutsu Kaisen</span>
                     </div>
@@ -135,10 +128,6 @@
                 </div>
                 
                 <div class="header-right">
-                    <button id="homeBtn" class="nav-btn" title="Home">
-                        <span class="icon">🏠</span>
-                        Home
-                    </button>
                     <button id="prevChapterBtn" class="nav-btn" disabled title="Previous Chapter">
                         <span class="icon">←</span>
                     </button>
@@ -161,37 +150,6 @@
             </main>
         </div>
 
-        <!-- Smooth Menu Panel -->
-        <div class="menu-panel" id="menuPanel">
-            <div class="menu-header">
-                <h3>Navigation</h3>
-                <button id="closeMenu" class="close-btn">&times;</button>
-            </div>
-            <div class="menu-content">
-                <div class="menu-section">
-                    <h4>Chapters</h4>
-                    <div class="chapter-list" id="menuChapterList">
-                        <!-- Chapters will be populated by JavaScript -->
-                    </div>
-                </div>
-                <div class="menu-section">
-                    <h4>Settings</h4>
-                    <div class="setting-group">
-                        <label for="autoFit">Auto-fit to screen</label>
-                        <input type="checkbox" id="autoFit" checked>
-                    </div>
-                    <div class="setting-group">
-                        <label for="pageGap">Page gap (px)</label>
-                        <input type="range" id="pageGap" min="0" max="20" value="10">
-                        <span id="gapValue">10px</span>
-                    </div>
-                    <div class="setting-group">
-                        <label for="backgroundColor">Background color</label>
-                        <input type="color" id="backgroundColor" value="#1a1a1a">
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Loading Overlay -->
         <div class="loading-overlay" id="loadingOverlay">
