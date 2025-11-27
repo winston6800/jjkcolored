@@ -161,7 +161,6 @@ class MangaReader {
             
             // Update UI
             this.updateHeaderInfo(chapter);
-            this.updateMenuChapterSelection(chapterId);
             this.updateNavigationButtons();
             
             // Load pages
