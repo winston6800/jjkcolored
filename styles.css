@@ -82,6 +82,33 @@ body {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
+/* AI Colorization Notice Section */
+.ai-notice-section {
+    background: linear-gradient(135deg, #1a1a2e 0%, #2d2d3d 100%);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid #4ecdc4;
+    box-shadow: 0 8px 32px rgba(78, 205, 196, 0.1);
+}
+
+.notice-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #4ecdc4;
+    margin-bottom: 1rem;
+}
+
+.notice-content {
+    color: #e0e0e0;
+    line-height: 1.6;
+}
+
+.notice-content p {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
 .synopsis-title {
     font-size: 1.8rem;
     font-weight: 600;
