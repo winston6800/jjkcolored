@@ -30,22 +30,36 @@ class MangaReader {
         this.readerViewport = document.getElementById('readerViewport');
         this.pageContainer = document.getElementById('pageContainer');
         this.loadingOverlay = document.getElementById('loadingOverlay');
+        this.settingsPanel = document.getElementById('settingsPanel');
         
         // Control buttons
+        this.menuBtn = document.getElementById('menuBtn');
+        this.menuPanel = document.getElementById('menuPanel');
+        this.closeMenuBtn = document.getElementById('closeMenu');
+        this.homeBtn = document.getElementById('homeBtn');
         this.mangaTitle = document.querySelector('.manga-title');
         this.prevChapterBtn = document.getElementById('prevChapterBtn');
         this.nextChapterBtn = document.getElementById('nextChapterBtn');
         this.fullscreenBtn = document.getElementById('fullscreenBtn');
+        this.menuChapterList = document.getElementById('menuChapterList');
         
         // Info displays
         this.currentChapterSpan = document.getElementById('currentChapter');
         this.pageInfoSpan = document.getElementById('pageInfo');
         
+        // Settings elements
+        this.autoFitCheckbox = document.getElementById('autoFit');
+        this.pageGapSlider = document.getElementById('pageGap');
+        this.gapValueSpan = document.getElementById('gapValue');
+        this.backgroundColorInput = document.getElementById('backgroundColor');
     }
     
     bindEvents() {
         // Landing page events
         this.chapterSearch.addEventListener('input', (e) => this.filterChapters(e.target.value));
+        
+        // Season navigation
+        this.bindSeasonEvents();
         
         // Chapter highlights
         const firstChapterBtn = document.querySelector('.first-chapter');
@@ -67,11 +81,15 @@ class MangaReader {
             });
         }
         
+        // Menu events
+        this.menuBtn.addEventListener('click', () => this.toggleMenu());
+        this.closeMenuBtn.addEventListener('click', () => this.closeMenu());
+        this.homeBtn.addEventListener('click', () => this.showLandingPage());
+        
         // Make manga title clickable to return home
         if (this.mangaTitle) {
             this.mangaTitle.addEventListener('click', () => this.showLandingPage());
             this.mangaTitle.title = 'Return to Home';
-            this.mangaTitle.style.cursor = 'pointer';
         }
         
         this.prevChapterBtn.addEventListener('click', () => this.previousChapter());
@@ -80,6 +98,10 @@ class MangaReader {
         // UI controls
         this.fullscreenBtn.addEventListener('click', () => this.toggleFullscreen());
         
+        // Settings
+        this.autoFitCheckbox.addEventListener('change', (e) => this.updateSetting('autoFit', e.target.checked));
+        this.pageGapSlider.addEventListener('input', (e) => this.updateSetting('pageGap', parseInt(e.target.value)));
+        this.backgroundColorInput.addEventListener('change', (e) => this.updateSetting('backgroundColor', e.target.value));
         
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => this.handleKeyboard(e));
@@ -92,8 +114,30 @@ class MangaReader {
         });
     }
     
+    bindSeasonEvents() {
+        const seasonCards = document.querySelectorAll('.season-card');
+        const seasonConfig = {
+            1: 1,    // Season 1: Chapters 1-64
+            2: 65,   // Season 2: Chapters 65-136 (Gojo's Past + Shibuya Incident)
+            3: 137   // Season 3: Chapters 137+ (Post-Shibuya/Itadori's Awakening)
+        };
+        
+        seasonCards.forEach(card => {
+            const btn = card.querySelector('.season-btn');
+            btn.addEventListener('click', () => {
+                const season = parseInt(card.dataset.season);
+                const chapterNumber = seasonConfig[season];
+                const chapterId = 'chapter' + chapterNumber;
+                
+                this.showReaderView();
+                this.loadChapter(chapterId);
+            });
+        });
+    }
+    
     initializeReader() {
         this.loadLandingPage();
+        this.populateMenuChapters();
     }
     
     loadLandingPage() {
@@ -115,6 +159,34 @@ class MangaReader {
         });
     }
     
+    populateMenuChapters() {
+        this.menuChapterList.innerHTML = '';
+        
+        MANGA_CONFIG.chapters.forEach(chapter => {
+            const chapterItem = document.createElement('div');
+            chapterItem.className = 'chapter-item';
+            chapterItem.dataset.chapterId = chapter.id;
+            chapterItem.innerHTML = `
+                <h5>${chapter.title}</h5>
+                <p>${chapter.description}</p>
+            `;
+            
+            chapterItem.addEventListener('click', () => {
+                this.loadChapter(chapter.id);
+                this.closeMenu();
+            });
+            
+            this.menuChapterList.appendChild(chapterItem);
+        });
+    }
+    
+    toggleMenu() {
+        this.menuPanel.classList.toggle('active');
+    }
+    
+    closeMenu() {
+        this.menuPanel.classList.remove('active');
+    }
     
     filterChapters(searchTerm) {
         const items = this.landingChaptersGrid.querySelectorAll('.chapter-item');
@@ -161,6 +233,7 @@ class MangaReader {
             
             // Update UI
             this.updateHeaderInfo(chapter);
+            this.updateMenuChapterSelection(chapterId);
             this.updateNavigationButtons();
             
             // Load pages
@@ -552,10 +625,23 @@ class MangaReader {
                 e.preventDefault();
                 this.toggleFullscreen();
                 break;
+            case 's':
+            case 'S':
+                e.preventDefault();
+                this.toggleSettings();
+                break;
+            case 'm':
+            case 'M':
+                e.preventDefault();
+                this.toggleMenu();
+                break;
             case 'h':
             case 'H':
                 e.preventDefault();
                 this.showLandingPage();
+                break;
+            case 'Escape':
+                this.closeMenu();
                 break;
         }
     }
@@ -578,6 +664,12 @@ class MangaReader {
         if (saved) {
             this.settings = { ...this.settings, ...JSON.parse(saved) };
         }
+        
+        // Apply settings
+        this.autoFitCheckbox.checked = this.settings.autoFit;
+        this.pageGapSlider.value = this.settings.pageGap;
+        this.backgroundColorInput.value = this.settings.backgroundColor;
+        this.gapValueSpan.textContent = `${this.settings.pageGap}px`;
         
         // Apply to DOM
         this.updateSetting('autoFit', this.settings.autoFit);

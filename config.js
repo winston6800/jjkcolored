@@ -293,7 +293,11 @@ const MANGA_CONFIG = {
     
     // Reading settings
     defaultSettings: {
-        readingMode: "singlePage", // Default to single page mode
+        // Options used by the reader logic:
+        // - "singlePage" → panel-by-panel mode (disabled by default)
+        // - any other value → long scrolling through all pages in the chapter
+        // We use "longStrip" to indicate long-form scrolling.
+        readingMode: "longStrip",
         autoFit: true,
         pageGap: 10,
         backgroundColor: "#1a1a1a",
