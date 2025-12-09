@@ -577,11 +577,17 @@ class MangaReader {
         // Apply setting immediately
         switch (key) {
             case 'autoFit':
-                this.pageContainer.classList.toggle('auto-fit', value);
+                if (this.pageContainer) {
+                    this.pageContainer.classList.toggle('auto-fit', value);
+                }
                 break;
             case 'pageGap':
-                this.pageContainer.style.gap = `${value}px`;
-                this.gapValueSpan.textContent = `${value}px`;
+                if (this.pageContainer) {
+                    this.pageContainer.style.gap = `${value}px`;
+                }
+                if (this.gapValueSpan) {
+                    this.gapValueSpan.textContent = `${value}px`;
+                }
                 break;
             case 'backgroundColor':
                 document.body.style.backgroundColor = value;
