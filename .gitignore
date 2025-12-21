@@ -67,3 +67,7 @@ node_modules/
 # *.key
 # *.pem
 # config/secrets.js
+
+# Colorized image folders (stored in R2/Cloudflare)
+colorizedjjk/
+colorizedjjk_webp/

@@ -58,9 +58,6 @@ class MangaReader {
         // Landing page events
         this.chapterSearch.addEventListener('input', (e) => this.filterChapters(e.target.value));
         
-        // Season navigation
-        this.bindSeasonEvents();
-        
         // Chapter highlights
         const firstChapterBtn = document.querySelector('.first-chapter');
         const newChapterBtn = document.querySelector('.new-chapter');
@@ -111,27 +108,6 @@ class MangaReader {
             if (e.target.tagName === 'IMG') {
                 e.preventDefault();
             }
-        });
-    }
-    
-    bindSeasonEvents() {
-        const seasonCards = document.querySelectorAll('.season-card');
-        const seasonConfig = {
-            1: 1,    // Season 1: Chapters 1-64
-            2: 65,   // Season 2: Chapters 65-136 (Gojo's Past + Shibuya Incident)
-            3: 137   // Season 3: Chapters 137+ (Post-Shibuya/Itadori's Awakening)
-        };
-        
-        seasonCards.forEach(card => {
-            const btn = card.querySelector('.season-btn');
-            btn.addEventListener('click', () => {
-                const season = parseInt(card.dataset.season);
-                const chapterNumber = seasonConfig[season];
-                const chapterId = 'chapter' + chapterNumber;
-                
-                this.showReaderView();
-                this.loadChapter(chapterId);
-            });
         });
     }
     
@@ -577,17 +553,11 @@ class MangaReader {
         // Apply setting immediately
         switch (key) {
             case 'autoFit':
-                if (this.pageContainer) {
-                    this.pageContainer.classList.toggle('auto-fit', value);
-                }
+                this.pageContainer.classList.toggle('auto-fit', value);
                 break;
             case 'pageGap':
-                if (this.pageContainer) {
-                    this.pageContainer.style.gap = `${value}px`;
-                }
-                if (this.gapValueSpan) {
-                    this.gapValueSpan.textContent = `${value}px`;
-                }
+                this.pageContainer.style.gap = `${value}px`;
+                this.gapValueSpan.textContent = `${value}px`;
                 break;
             case 'backgroundColor':
                 document.body.style.backgroundColor = value;
