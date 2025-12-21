@@ -548,6 +548,7 @@ class MangaReader {
     
     updateMenuChapterSelection(chapterId) {
         // Update active chapter in menu
+        if (!this.menuChapterList) return;
         const chapterItems = this.menuChapterList.querySelectorAll('.chapter-item');
         chapterItems.forEach(item => {
             item.classList.remove('active');

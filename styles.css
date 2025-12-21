@@ -150,6 +150,111 @@ body {
     font-size: 0.9rem;
 }
 
+/* Season Navigation Section */
+.seasons-section-inline {
+    margin: 2rem 0;
+    padding: 2rem 0;
+    border-top: 1px solid #444;
+    border-bottom: 1px solid #444;
+}
+
+.seasons-title-inline {
+    font-size: 1.5rem;
+    font-weight: 600;
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.seasons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.season-card {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border: 2px solid transparent;
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.season-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+    z-index: -1;
+    margin: -2px;
+    border-radius: 16px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.season-card:hover::before {
+    opacity: 1;
+}
+
+.season-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 32px rgba(78, 205, 196, 0.4);
+}
+
+.season-card h4 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.season-card p {
+    color: #b0b0b0;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+.season-btn {
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+    border: none;
+    color: #ffffff;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+    position: relative;
+    z-index: 1;
+}
+
+.season-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
+    background: linear-gradient(45deg, #ff5252, #26a69a);
+}
+
+.season-btn:active {
+    transform: translateY(0);
+}
+
 /* Chapters Section */
 .chapters-section {
     background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
