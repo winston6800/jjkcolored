@@ -95,8 +95,35 @@ class MangaReader {
             this.mangaTitle.title = 'Return to Home';
         }
         
-        this.prevChapterBtn.addEventListener('click', () => this.previousChapter());
-        this.nextChapterBtn.addEventListener('click', () => this.nextChapter());
+        if (this.prevChapterBtn) {
+            this.prevChapterBtn.addEventListener('click', () => this.previousChapter());
+        }
+        if (this.nextChapterBtn) {
+            this.nextChapterBtn.addEventListener('click', () => this.nextChapter());
+        }
+        
+        // Season navigation buttons
+        const seasonButtons = document.querySelectorAll('.season-btn');
+        seasonButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const seasonCard = e.target.closest('.season-card');
+                if (seasonCard) {
+                    const season = parseInt(seasonCard.dataset.season);
+                    let chapterId;
+                    if (season === 1) {
+                        chapterId = 'chapter1';
+                    } else if (season === 2) {
+                        chapterId = 'chapter65';
+                    } else if (season === 3) {
+                        chapterId = 'chapter137';
+                    }
+                    if (chapterId) {
+                        this.showReaderView();
+                        this.loadChapter(chapterId);
+                    }
+                }
+            });
+        });
         
         // UI controls
         if (this.fullscreenBtn) {
@@ -661,10 +688,18 @@ class MangaReader {
         }
         
         // Apply settings
-        this.autoFitCheckbox.checked = this.settings.autoFit;
-        this.pageGapSlider.value = this.settings.pageGap;
-        this.backgroundColorInput.value = this.settings.backgroundColor;
-        this.gapValueSpan.textContent = `${this.settings.pageGap}px`;
+        if (this.autoFitCheckbox) {
+            this.autoFitCheckbox.checked = this.settings.autoFit;
+        }
+        if (this.pageGapSlider) {
+            this.pageGapSlider.value = this.settings.pageGap;
+        }
+        if (this.backgroundColorInput) {
+            this.backgroundColorInput.value = this.settings.backgroundColor;
+        }
+        if (this.gapValueSpan) {
+            this.gapValueSpan.textContent = `${this.settings.pageGap}px`;
+        }
         
         // Apply to DOM
         this.updateSetting('autoFit', this.settings.autoFit);
