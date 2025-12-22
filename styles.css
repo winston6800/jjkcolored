@@ -1130,7 +1130,8 @@ body {
 /* Reader Viewport */
 .reader-viewport {
     flex: 1;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     background: #1a1a1a;
     position: relative;
@@ -1140,6 +1141,7 @@ body {
     padding: 1rem;
     padding-bottom: 2rem;
     min-height: 0;
+    height: calc(100vh - 80px);
 }
 
 .page-container {
@@ -1149,17 +1151,21 @@ body {
     gap: 0.5rem;
     max-width: 100%;
     width: 100%;
+    padding-bottom: 2rem;
 }
 
 .manga-page {
     max-width: 100%;
+    width: 100%;
     height: auto;
-    border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    transition: all 0.3s ease;
+    object-fit: contain;
+    border-radius: 0;
+    box-shadow: none;
+    transition: opacity 0.2s ease;
     cursor: pointer;
     display: block;
-    margin: 0 auto;
+    margin: 0;
+    padding: 0;
 }
 
 .manga-page:hover {
@@ -1168,19 +1174,41 @@ body {
 }
 
 /* Reading Modes */
-.page-container.clickPage-page .manga-page {
-    max-width: 100%;
-    width: 100%;
-    margin: 0 auto;
-    cursor: pointer;
-}
-
 .page-container.clickPage-page {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 100%;
+    justify-content: flex-start;
+    min-height: calc(100vh - 80px);
+    padding: 0;
+}
+
+.page-container.clickPage-page .manga-page {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    margin: 0;
+    cursor: pointer;
+    display: block;
+}
+
+.page-container.longStrip-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding: 0;
+}
+
+.page-container.longStrip-page .manga-page {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    margin: 0;
+    display: block;
+    cursor: default;
 }
 
 .page-container.single-page .manga-page {
@@ -1191,10 +1219,14 @@ body {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
+    gap: 0.5rem;
 }
 
 .page-container.double-page .manga-page {
-    max-width: 45%;
+    max-width: 49%;
+    width: 49%;
+    height: auto;
+    object-fit: contain;
     margin: 0.5rem;
 }
 

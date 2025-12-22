@@ -568,6 +568,9 @@ class MangaReader {
         pages.forEach((page, index) => {
             if (index + 1 === this.currentPage) {
                 page.style.display = 'block';
+                page.style.width = '100%';
+                page.style.maxWidth = '100%';
+                page.style.height = 'auto';
             } else {
                 page.style.display = 'none';
             }
@@ -581,7 +584,12 @@ class MangaReader {
         const pages = this.pageContainer.querySelectorAll('.manga-page');
         pages.forEach(page => {
             page.style.display = 'block';
+            page.style.width = '100%';
+            page.style.maxWidth = '100%';
+            page.style.height = 'auto';
         });
+        // Ensure viewport can scroll
+        this.readerViewport.style.overflowY = 'auto';
     }
     
     nextPage() {
