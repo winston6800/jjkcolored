@@ -293,11 +293,11 @@ const MANGA_CONFIG = {
     
     // Reading settings
     defaultSettings: {
-        // Options used by the reader logic:
-        // - "singlePage" → panel-by-panel mode (disabled by default)
-        // - any other value → long scrolling through all pages in the chapter
-        // We use "longStrip" to indicate long-form scrolling.
-        readingMode: "longStrip",
+        // Reading modes:
+        // - "clickPage" → One page at a time, click to advance (default, like MangaDex)
+        // - "longStrip" → All pages visible, scroll to read (optional)
+        // - "doublePage" → Two pages side by side
+        readingMode: "clickPage",
         autoFit: true,
         pageGap: 10,
         backgroundColor: "#1a1a1a",

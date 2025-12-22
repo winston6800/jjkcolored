@@ -4,7 +4,7 @@ class MangaReader {
         this.currentChapter = null;
         this.currentPage = 1;
         this.currentPanel = 0; // For single page mode panel navigation
-        this.readingMode = 'singlePage';
+        this.readingMode = 'clickPage';
         this.settings = { ...MANGA_CONFIG.defaultSettings };
         this.isLoading = false;
         this.currentView = 'landing'; // 'landing' or 'reader'
@@ -348,9 +348,14 @@ class MangaReader {
             // Update reading mode
             this.setReadingMode(this.settings.readingMode);
             
-            // Initialize single page mode if needed
+            // Initialize single page mode if needed (legacy support)
             if (this.readingMode === 'singlePage') {
                 this.initializeSinglePageMode();
+            }
+            
+            // Scroll to top for clickPage mode
+            if (this.readingMode === 'clickPage') {
+                this.readerViewport.scrollTop = 0;
             }
             
         } catch (error) {
@@ -382,20 +387,25 @@ class MangaReader {
             // Use eager loading for first few pages, lazy for the rest
             img.loading = i < preloadCount ? 'eager' : 'lazy';
             
-            // Add click to next page
+            // Add click to next page (MangaDex style)
             img.addEventListener('click', (e) => {
-                if (this.readingMode === 'singlePage') {
-                    // Handle left/right click for single page mode
+                if (this.readingMode === 'longStrip') {
+                    // In long strip mode, clicking doesn't advance (use scrolling)
+                    return;
+                } else if (this.readingMode === 'clickPage') {
+                    // Click anywhere to advance to next page
                     const rect = img.getBoundingClientRect();
                     const clickX = e.clientX - rect.left;
                     const centerX = rect.width / 2;
                     
+                    // Left side = previous, right side = next
                     if (clickX < centerX) {
-                        this.previousPanel();
+                        this.previousPage();
                     } else {
-                        this.nextPanel();
+                        this.nextPage();
                     }
                 } else {
+                    // Double page mode - click to advance
                     this.nextPage();
                 }
             });
@@ -423,6 +433,11 @@ class MangaReader {
                 // Add loaded class for smooth animation
                 img.classList.add('loaded');
             });
+            
+            // Initially hide all pages except first in clickPage mode
+            if (this.readingMode === 'clickPage' && i > 0) {
+                img.style.display = 'none';
+            }
             
             this.pageContainer.appendChild(img);
             
@@ -528,9 +543,15 @@ class MangaReader {
         this.pageContainer.className = 'page-container';
         this.pageContainer.classList.add(mode + '-page');
         
-        // Special handling for single page mode
+        // Special handling for different modes
         if (mode === 'singlePage') {
             this.initializeSinglePageMode();
+        } else if (mode === 'clickPage') {
+            // Show only current page, hide others
+            this.updateClickPageView();
+        } else if (mode === 'longStrip') {
+            // Show all pages for scrolling
+            this.updateLongStripView();
         }
         
         // Apply auto-fit if enabled
@@ -541,10 +562,32 @@ class MangaReader {
         this.saveSettings();
     }
     
+    updateClickPageView() {
+        if (!this.currentChapter) return;
+        const pages = this.pageContainer.querySelectorAll('.manga-page');
+        pages.forEach((page, index) => {
+            if (index + 1 === this.currentPage) {
+                page.style.display = 'block';
+            } else {
+                page.style.display = 'none';
+            }
+        });
+        // Scroll to top to show current page
+        this.readerViewport.scrollTop = 0;
+    }
+    
+    updateLongStripView() {
+        // Show all pages for scrolling
+        const pages = this.pageContainer.querySelectorAll('.manga-page');
+        pages.forEach(page => {
+            page.style.display = 'block';
+        });
+    }
+    
     nextPage() {
         if (!this.currentChapter) return;
         
-        // Handle single page mode
+        // Handle single page mode (legacy)
         if (this.readingMode === 'singlePage') {
             this.nextPanel();
             return;
@@ -556,7 +599,14 @@ class MangaReader {
         
         if (this.currentPage < maxPage) {
             this.currentPage += pagesPerView;
-            this.scrollToCurrentPage();
+            
+            // Update view based on mode
+            if (this.readingMode === 'clickPage') {
+                this.updateClickPageView();
+            } else {
+                this.scrollToCurrentPage();
+            }
+            
             this.updatePageInfo();
             this.updateNavigationButtons();
         } else if (this.nextChapterBtn && !this.nextChapterBtn.disabled) {
@@ -567,7 +617,7 @@ class MangaReader {
     previousPage() {
         if (!this.currentChapter) return;
         
-        // Handle single page mode
+        // Handle single page mode (legacy)
         if (this.readingMode === 'singlePage') {
             this.previousPanel();
             return;
@@ -576,8 +626,15 @@ class MangaReader {
         const pagesPerView = this.readingMode === 'double' ? 2 : 1;
         
         if (this.currentPage > 1) {
-            this.currentPage -= pagesPerView;
-            this.scrollToCurrentPage();
+            this.currentPage = Math.max(1, this.currentPage - pagesPerView);
+            
+            // Update view based on mode
+            if (this.readingMode === 'clickPage') {
+                this.updateClickPageView();
+            } else {
+                this.scrollToCurrentPage();
+            }
+            
             this.updatePageInfo();
             this.updateNavigationButtons();
         } else if (this.prevChapterBtn && !this.prevChapterBtn.disabled) {

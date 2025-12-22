@@ -1168,6 +1168,21 @@ body {
 }
 
 /* Reading Modes */
+.page-container.clickPage-page .manga-page {
+    max-width: 100%;
+    width: 100%;
+    margin: 0 auto;
+    cursor: pointer;
+}
+
+.page-container.clickPage-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100%;
+}
+
 .page-container.single-page .manga-page {
     max-width: 800px;
 }
