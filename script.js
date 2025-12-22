@@ -42,6 +42,8 @@ class MangaReader {
         this.nextChapterBtn = document.getElementById('nextChapterBtn');
         this.fullscreenBtn = document.getElementById('fullscreenBtn');
         this.menuChapterList = document.getElementById('menuChapterList');
+        this.shareBtn = document.getElementById('shareBtn');
+        this.shareDropdown = document.getElementById('shareDropdown');
         
         // Info displays
         this.currentChapterSpan = document.getElementById('currentChapter');
@@ -56,7 +58,9 @@ class MangaReader {
     
     bindEvents() {
         // Landing page events
-        this.chapterSearch.addEventListener('input', (e) => this.filterChapters(e.target.value));
+        if (this.chapterSearch) {
+            this.chapterSearch.addEventListener('input', (e) => this.filterChapters(e.target.value));
+        }
         
         // Chapter highlights
         const firstChapterBtn = document.querySelector('.first-chapter');
@@ -130,6 +134,52 @@ class MangaReader {
             this.fullscreenBtn.addEventListener('click', () => this.toggleFullscreen());
         }
         
+        // Share button
+        if (this.shareBtn) {
+            this.shareBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.toggleShareDropdown();
+            });
+        }
+        
+        // Share links
+        const shareTwitter = document.getElementById('shareTwitter');
+        const shareFacebook = document.getElementById('shareFacebook');
+        const shareReddit = document.getElementById('shareReddit');
+        const shareCopy = document.getElementById('shareCopy');
+        
+        if (shareTwitter) {
+            shareTwitter.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.shareToTwitter();
+            });
+        }
+        if (shareFacebook) {
+            shareFacebook.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.shareToFacebook();
+            });
+        }
+        if (shareReddit) {
+            shareReddit.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.shareToReddit();
+            });
+        }
+        if (shareCopy) {
+            shareCopy.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.copyShareLink();
+            });
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (this.shareDropdown && !this.shareDropdown.contains(e.target) && e.target !== this.shareBtn) {
+                this.shareDropdown.classList.remove('active');
+            }
+        });
+        
         // Settings
         if (this.autoFitCheckbox) {
             this.autoFitCheckbox.addEventListener('change', (e) => this.updateSetting('autoFit', e.target.checked));
@@ -158,13 +208,17 @@ class MangaReader {
     }
     
     loadLandingPage() {
+        if (!this.landingChaptersGrid) return;
+        
         this.landingChaptersGrid.innerHTML = '';
         
+        // Display all chapters
         MANGA_CONFIG.chapters.forEach(chapter => {
             const chapterItem = document.createElement('div');
             chapterItem.className = 'chapter-item';
             chapterItem.innerHTML = `
                 <h5>${chapter.title}</h5>
+                <span class="chapter-page-count">${chapter.pageCount} pages</span>
             `;
             
             chapterItem.addEventListener('click', () => {
@@ -174,6 +228,13 @@ class MangaReader {
             
             this.landingChaptersGrid.appendChild(chapterItem);
         });
+        
+        // Update chapter count display
+        const chapterCount = MANGA_CONFIG.chapters.length;
+        const chaptersHeader = document.querySelector('.chapters-title');
+        if (chaptersHeader) {
+            chaptersHeader.textContent = `All Manga Chapters (${chapterCount} total)`;
+        }
     }
     
     populateMenuChapters() {
@@ -211,14 +272,37 @@ class MangaReader {
     }
     
     filterChapters(searchTerm) {
+        if (!this.landingChaptersGrid) return;
+        
         const items = this.landingChaptersGrid.querySelectorAll('.chapter-item');
+        const searchLower = searchTerm.toLowerCase().trim();
+        
+        if (!searchLower) {
+            // Show all if search is empty
+            items.forEach(item => {
+                item.style.display = 'flex';
+            });
+            return;
+        }
         
         items.forEach(item => {
-            const title = item.querySelector('h5').textContent.toLowerCase();
-            const searchLower = searchTerm.toLowerCase();
+            const titleElement = item.querySelector('h5');
+            if (!titleElement) {
+                item.style.display = 'none';
+                return;
+            }
             
-            if (title.includes(searchLower)) {
-                item.style.display = 'block';
+            const title = titleElement.textContent.toLowerCase();
+            // Extract chapter number from title (e.g., "Chapter 123" -> "123")
+            const chapterMatch = title.match(/chapter\s*(\d+)/);
+            const chapterNum = chapterMatch ? chapterMatch[1] : '';
+            
+            // Search by chapter number or title
+            const matchesNumber = chapterNum && chapterNum.includes(searchLower);
+            const matchesTitle = title.includes(searchLower);
+            
+            if (matchesNumber || matchesTitle) {
+                item.style.display = 'flex';
             } else {
                 item.style.display = 'none';
             }
@@ -604,7 +688,9 @@ class MangaReader {
                 break;
             case 'pageGap':
                 this.pageContainer.style.gap = `${value}px`;
-                this.gapValueSpan.textContent = `${value}px`;
+                if (this.gapValueSpan) {
+                    this.gapValueSpan.textContent = `${value}px`;
+                }
                 break;
             case 'backgroundColor':
                 document.body.style.backgroundColor = value;
@@ -833,6 +919,7 @@ class MangaReader {
         const chapterNumber = chapter.id.replace('chapter', '');
         const title = `Jujutsu Kaisen Chapter ${chapterNumber} Colored – Read Online Free`;
         const description = `${chapter.description} – Read Chapter ${chapterNumber} of Jujutsu Kaisen manga in full color HD.`;
+        const shareUrl = `${window.location.origin}${window.location.pathname}#${chapter.id}`;
         
         // Update document title
         document.title = title;
@@ -843,6 +930,7 @@ class MangaReader {
         // Update Open Graph tags
         this.updateMetaTag('og:title', title, 'property');
         this.updateMetaTag('og:description', description, 'property');
+        this.updateMetaTag('og:url', shareUrl, 'property');
         
         // Update Twitter tags
         this.updateMetaTag('twitter:title', title);
@@ -850,6 +938,72 @@ class MangaReader {
         
         // Update JSON-LD schema for this chapter
         this.updateSchema(chapter);
+    }
+    
+    toggleShareDropdown() {
+        if (this.shareDropdown) {
+            this.shareDropdown.classList.toggle('active');
+        }
+    }
+    
+    getShareUrl() {
+        if (!this.currentChapter) return window.location.href;
+        const chapterNumber = this.currentChapter.id.replace('chapter', '');
+        return `${window.location.origin}${window.location.pathname}#${this.currentChapter.id}`;
+    }
+    
+    getShareText() {
+        if (!this.currentChapter) return 'Check out this Jujutsu Kaisen chapter!';
+        const chapterNumber = this.currentChapter.id.replace('chapter', '');
+        return `Read Jujutsu Kaisen Chapter ${chapterNumber} Colored Online - Full Color HD Manga`;
+    }
+    
+    shareToTwitter() {
+        const url = this.getShareUrl();
+        const text = this.getShareText();
+        const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+        window.open(twitterUrl, '_blank', 'width=550,height=420');
+        this.toggleShareDropdown();
+    }
+    
+    shareToFacebook() {
+        const url = this.getShareUrl();
+        const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+        window.open(facebookUrl, '_blank', 'width=550,height=420');
+        this.toggleShareDropdown();
+    }
+    
+    shareToReddit() {
+        const url = this.getShareUrl();
+        const text = this.getShareText();
+        const redditUrl = `https://reddit.com/submit?title=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+        window.open(redditUrl, '_blank', 'width=550,height=420');
+        this.toggleShareDropdown();
+    }
+    
+    async copyShareLink() {
+        const url = this.getShareUrl();
+        try {
+            await navigator.clipboard.writeText(url);
+            const copyBtn = document.getElementById('shareCopy');
+            if (copyBtn) {
+                const originalText = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<span class="share-icon">✓</span> Copied!';
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalText;
+                }, 2000);
+            }
+            this.toggleShareDropdown();
+        } catch (err) {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = url;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            this.toggleShareDropdown();
+        }
     }
     
     updateMetaTag(name, content, attribute = 'name') {
