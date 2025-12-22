@@ -568,15 +568,19 @@ class MangaReader {
         pages.forEach((page, index) => {
             if (index + 1 === this.currentPage) {
                 page.style.display = 'block';
-                page.style.width = '100%';
                 page.style.maxWidth = '100%';
+                page.style.maxHeight = 'calc(100vh - 80px)';
+                page.style.width = 'auto';
                 page.style.height = 'auto';
+                page.style.objectFit = 'contain';
+                page.style.margin = '0 auto';
             } else {
                 page.style.display = 'none';
             }
         });
-        // Scroll to top to show current page
+        // Reset scroll position
         this.readerViewport.scrollTop = 0;
+        this.readerViewport.scrollLeft = 0;
     }
     
     updateLongStripView() {

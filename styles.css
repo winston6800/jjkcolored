@@ -1133,16 +1133,13 @@ body {
 /* Reader Viewport */
 .reader-viewport {
     flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
     background: #1a1a1a;
     position: relative;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    padding: 1rem;
-    padding-bottom: 2rem;
+    align-items: center;
+    padding: 0;
     min-height: 0;
     height: calc(100vh - 80px);
 }
@@ -1181,17 +1178,20 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    min-height: calc(100vh - 80px);
+    justify-content: center;
+    height: 100%;
+    width: 100%;
     padding: 0;
+    margin: 0;
 }
 
 .page-container.clickPage-page .manga-page {
-    width: 100%;
     max-width: 100%;
+    max-height: calc(100vh - 80px);
+    width: auto;
     height: auto;
     object-fit: contain;
-    margin: 0;
+    margin: 0 auto;
     cursor: pointer;
     display: block;
 }
@@ -1202,6 +1202,7 @@ body {
     align-items: center;
     gap: 0;
     padding: 0;
+    overflow-y: auto;
 }
 
 .page-container.longStrip-page .manga-page {
