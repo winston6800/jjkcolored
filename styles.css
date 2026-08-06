@@ -1777,6 +1777,47 @@ body.fullscreen .reader-ad {
     display: none !important;
 }
 
+/* Landing Page Sponsor Banner */
+.landing-ad {
+    position: relative;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto 2rem;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #333;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.landing-ad:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+.landing-ad-img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 240px;
+}
+
+.landing-ad-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    z-index: 2;
+}
+
 /* Reader Margin Ads */
 .reader-ad {
     display: none;
@@ -1889,10 +1930,15 @@ body.fullscreen .reader-ad {
     font-size: 0.6rem;
 }
 
-@media (min-width: 1500px) {
+@media (min-width: 1300px) {
     .reader-ad {
         display: block;
     }
+}
+
+/* Long-strip mode renders pages full-width, so there is no margin to spare */
+.reader-view:has(.page-container.longStrip-page) .reader-ad {
+    display: none;
 }
 
 /* Auto-fit functionality */
