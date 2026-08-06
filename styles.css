@@ -1773,6 +1773,128 @@ body.fullscreen .reader-container {
     height: 100vh;
 }
 
+body.fullscreen .reader-ad {
+    display: none !important;
+}
+
+/* Reader Margin Ads */
+.reader-ad {
+    display: none;
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 180px;
+    z-index: 50;
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.reader-ad:hover {
+    transform: translateY(-50%) scale(1.03);
+}
+
+.reader-ad-left {
+    left: 16px;
+}
+
+.reader-ad-right {
+    right: 16px;
+}
+
+.reader-ad-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 0.6rem;
+    letter-spacing: 0.05em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    z-index: 2;
+}
+
+.reader-ad-img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.reader-ad-fallback-content {
+    display: none;
+}
+
+.reader-ad-fallback .reader-ad-fallback-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+    padding: 1.25rem 0.85rem 1.5rem;
+    background: linear-gradient(180deg, #e8dcc0 0%, #e8dcc0 38%, #7a1f4f 38%, #3d1740 100%);
+}
+
+.reader-ad-tag {
+    background: #fff;
+    color: #1a1a1a;
+    border: 2px solid #1a1a1a;
+    border-radius: 6px;
+    padding: 0.15rem 0.5rem;
+    font-weight: 700;
+    font-size: 0.7rem;
+}
+
+.reader-ad-title {
+    font-weight: 800;
+    font-size: 1.1rem;
+    background: linear-gradient(90deg, #ff8a3d, #4ecdc4);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.reader-ad-tagline {
+    font-size: 0.72rem;
+    color: #f5f0e6;
+    line-height: 1.3;
+}
+
+.reader-ad-tagline strong {
+    color: #f5c542;
+}
+
+.reader-ad-cta {
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+.reader-ad-btn {
+    background: #4caf50;
+    color: #fff;
+    font-weight: 700;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+}
+
+.reader-ad-fine {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.6rem;
+}
+
+@media (min-width: 1500px) {
+    .reader-ad {
+        display: block;
+    }
+}
+
 /* Auto-fit functionality */
 .manga-page.auto-fit {
     width: 100%;
